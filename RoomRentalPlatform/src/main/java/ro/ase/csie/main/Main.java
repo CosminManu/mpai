@@ -1,4 +1,4 @@
-package ro.ase.csie;
+package ro.ase.csie.main;
 
 public class Main {
     public static void main(String[] args) {
