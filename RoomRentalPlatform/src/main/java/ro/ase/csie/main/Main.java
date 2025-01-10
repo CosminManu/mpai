@@ -8,6 +8,7 @@ public class Main {
 
         DatabaseManager db = DatabaseManager.getInstance();
         db.createSchema();
+        db.insertTestData();
         db.closeConnection();
     }
 }
