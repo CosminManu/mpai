@@ -1,22 +1,22 @@
 package ro.ase.csie.models;
 
 public class User {
-    private int id;
+    private int idUser;
     private String name;
     private String email;
 
-    public User(int id, String name, String email) {
-        this.id = id;
+    public User(int idUser, String name, String email) {
+        this.idUser = idUser;
         this.name = name;
         this.email = email;
     }
 
-    public int getId() {
-        return id;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     public String getName() {
@@ -37,10 +37,7 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                '}';
+        return "User{idUser=" + idUser + ", name='" + name + "', email='" + email + "'}";
     }
 }
+

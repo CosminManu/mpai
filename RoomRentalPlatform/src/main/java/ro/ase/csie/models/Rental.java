@@ -2,44 +2,45 @@ package ro.ase.csie.models;
 
 import java.time.LocalDate;
 
-public class Rental {
+import java.time.LocalDate;
 
-    private int id;
-    private User user;
-    private Room room;
+public class Rental {
+    private int idRental;
+    private int idUser;
+    private int idRoom;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public Rental(int id, User user, Room room, LocalDate startDate, LocalDate endDate) {
-        this.id = id;
-        this.user = user;
-        this.room = room;
+    public Rental(int idRental, int idUser, int idRoom, LocalDate startDate, LocalDate endDate) {
+        this.idRental = idRental;
+        this.idUser = idUser;
+        this.idRoom = idRoom;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public int getId() {
-        return id;
+    public int getIdRental() {
+        return idRental;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdRental(int idRental) {
+        this.idRental = idRental;
     }
 
-    public User getUser() {
-        return user;
+    public int getIdUser() {
+        return idUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
-    public Room getRoom() {
-        return room;
+    public int getIdRoom() {
+        return idRoom;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setIdRoom(int idRoom) {
+        this.idRoom = idRoom;
     }
 
     public LocalDate getStartDate() {
@@ -58,22 +59,9 @@ public class Rental {
         this.endDate = endDate;
     }
 
-    public long getDurationInDays(){
-        return java.time.temporal.ChronoUnit.DAYS.between(startDate, endDate);
-    }
-
-    public double calculateTotalCost() {
-        return getDurationInDays() * room.getPricePerDay();
-    }
-
     @Override
     public String toString() {
-        return "Rental{" +
-                "id=" + id +
-                ", user=" + user +
-                ", room=" + room +
-                ", startDate=" + startDate +
-                ", endDate=" + endDate +
-                '}';
+        return "Rental{idRental=" + idRental + ", idUser=" + idUser + ", idRoom=" + idRoom +
+                ", startDate=" + startDate + ", endDate=" + endDate + "}";
     }
 }
