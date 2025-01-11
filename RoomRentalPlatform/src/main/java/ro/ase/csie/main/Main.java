@@ -31,7 +31,8 @@ public class Main {
         // Inserează date de test
         dbManager.insertTestData();
         // Exemple de utilizare DAO pentru a insera date
-        //userDAO.insertUser("Alice", "alice1@example.com");
+//        User user15=new User( "Alice", "alice1@example.com");
+//        userDAO.insertUser(user15);
         //roomDAO.insertRoom("Room A", 1, "Building 1", 20, "Conference", true, true, true, 100.0);
         //rentalDAO.insertRental(1, 1, "2025-01-01", "2025-01-05");
         //paymentDAO.insertPayment(1, 500.0, "2025-01-06", "Paid");
@@ -120,10 +121,10 @@ public class Main {
                 }
 
                 if (selectedUser != null) {
-                    System.out.println("Vrei sa vezi ce sali sunt disponibile? DA/NU");
+                    System.out.println("Vrei sa rezervi o sala? REZERVA");
                     String response = scanner.nextLine();
 
-                    if ("DA".equalsIgnoreCase(response)) {
+                    if ("REZERVA".equalsIgnoreCase(response)) {
                         // Creăm și ocupăm două săli exemplu
                         ORoom salaJ = new ORoom("Room J");
                         ORoom salaD = new ORoom("Room D");
