@@ -1,29 +1,35 @@
 package ro.ase.csie.designPatterns.CristinaObserver;
 
-import ro.ase.csie.designPatterns.CristinaObserver.IManager;
-import ro.ase.csie.designPatterns.CristinaObserver.Manager;
-import ro.ase.csie.designPatterns.CristinaObserver.Rental;
+import ro.ase.csie.designPatterns.CristinaObserver.OUser;
+import ro.ase.csie.designPatterns.CristinaObserver.ORoom;
 
-// Main.java
 public class Main {
     public static void main(String[] args) {
-        // Crearea unor manageri de proiect
-        IManager manager1 = new Manager("John Doe");
-        IManager manager2 = new Manager("Alice Smith");
+        // Creare utilizatori
+        IUser utilizator1 = new OUser("Ana");
+        IUser utilizator2 = new OUser("Mihai");
+        IUser utilizator3 = new OUser("Ioana");
 
-        // Crearea unei închirieri
-        Rental rental = new Rental(1, 101, 1001, "În așteptare");
+        // Creare săli
+        ORoom sala1 = new ORoom("101");
+        ORoom sala2 = new ORoom("202");
 
-        // Abonarea managerilor la notificări
-        rental.abonareManager(manager1);
-        rental.abonareManager(manager2);
+        // Abonare utilizatori
+        sala1.abonareUtilizator(utilizator1);
+        sala1.abonareUtilizator(utilizator2);
 
-        // Modificarea statutului închirierii la "Confirmată"
-        System.out.println("Schimbarea statutului închirierii...");
-        rental.setStatus("Confirmată");  // Nu vor fi afișate mesaje suplimentare
+        sala2.abonareUtilizator(utilizator3);
 
-        // Modificarea statutului închirierii la "Eliberată"
-        System.out.println("Schimbarea statutului închirierii...");
-        rental.setStatus("Eliberată");  // Afisează doar numărul sălii eliberate
+        // Test notificări
+        sala1.elibereazaSala(); // Notifică Ana și Mihai
+        sala2.elibereazaSala(); // Notifică Ioana
+
+        // Dezabonare utilizator și notificare ulterioară
+        sala1.dezabonareUtilizator(utilizator1);
+        sala1.elibereazaSala(); // Notifică doar Mihai
+
+
+        sala2.ocupaSala();
     }
 }
+

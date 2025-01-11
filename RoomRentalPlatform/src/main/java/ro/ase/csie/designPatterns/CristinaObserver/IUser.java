@@ -1,6 +1,7 @@
 package ro.ase.csie.designPatterns.CristinaObserver;
 
-// IManager.java
-public interface IManager {
+// IUser.java
+public interface IUser {
     void primesteNotificare(String mesaj);
 }
+
