@@ -15,6 +15,39 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
+    private static int readInteger(Scanner scanner) {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a valid number: ");
+            }
+        }
+    }
+
+    private static boolean readBoolean(Scanner scanner) {
+        while (true) {
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("true")) {
+                return true;
+            } else if (input.equals("false")) {
+                return false;
+            } else {
+                System.out.print("Invalid input. Please enter 'true' or 'false': ");
+            }
+        }
+    }
+
+    private static boolean isIdUnique(List<Room> listRoom, int idRoom) {
+        for (Room room : listRoom) {
+            if (room.getIdRoom() == idRoom) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello world!");
 
@@ -259,37 +292,6 @@ public class Main {
 
 
 
-    private static int readInteger(Scanner scanner) {
-        while (true) {
-            try {
-                return Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.print("Invalid input. Please enter a valid number: ");
-            }
-        }
-    }
-
-    private static boolean readBoolean(Scanner scanner) {
-        while (true) {
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("true")) {
-                return true;
-            } else if (input.equals("false")) {
-                return false;
-            } else {
-                System.out.print("Invalid input. Please enter 'true' or 'false': ");
-            }
-        }
-    }
-
-    private static boolean isIdUnique(List<Room> listRoom, int idRoom) {
-        for (Room room : listRoom) {
-            if (room.getIdRoom() == idRoom) {
-                return false;
-            }
-        }
-        return true;
-    }
 
 }
 
