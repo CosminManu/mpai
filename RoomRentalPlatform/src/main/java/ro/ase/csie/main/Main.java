@@ -1,5 +1,9 @@
 package ro.ase.csie.main;
 
+import ro.ase.csie.dao.PaymentDAO;
+import ro.ase.csie.dao.RentalDAO;
+import ro.ase.csie.dao.RoomDAO;
+import ro.ase.csie.dao.UserDAO;
 import ro.ase.csie.db.*;
 import ro.ase.csie.designPatterns.AbstractFactory.ConcreteEntityFactory;
 import ro.ase.csie.designPatterns.AbstractFactory.EntityFactory;
@@ -7,13 +11,15 @@ import ro.ase.csie.designPatterns.Observer.IUser;
 import ro.ase.csie.designPatterns.Observer.ORoom;
 import ro.ase.csie.designPatterns.Observer.OUser;
 import ro.ase.csie.designPatterns.Builder.RoomBuilder;
+import ro.ase.csie.designPatterns.Command.CommandInvoker;
+import ro.ase.csie.designPatterns.Command.CreateRentalCommand;
+import ro.ase.csie.designPatterns.Command.MakePaymentCommand;
 import ro.ase.csie.models.User;
 import ro.ase.csie.models.Room;
 import ro.ase.csie.models.Rental;
 import ro.ase.csie.models.Payment;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -104,13 +110,14 @@ public class Main {
         System.out.println("-------------------------------------------------------------\n");
 
 
+
         // Meniu pentru selectarea design pattern-ului
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n\n\nSelectati design patternul pe care doriti sa il exemplificati:");
         System.out.println("1. Builder");
         System.out.println("2. Observer");
         System.out.println("3. Abstract Factory");
-        System.out.println("4. Danusia");
+        System.out.println("4. Danusia Command");
 
         int selection = scanner.nextInt();
         scanner.nextLine(); // Consumă newline după introducerea numărului
@@ -295,7 +302,6 @@ public class Main {
                 break;
             }
 
-
             case 3:
                 System.out.println("Opțiunea Cosmin Abstract Factory selectată");
 
@@ -305,10 +311,13 @@ public class Main {
 
                 Room room1 = factory.createRoom(11, "Executive Room", 2, "Main Building", 15, "Meeting", true, true, true, 250.0);
                 roomDAO.insertRoom(room1);
+
                 Rental newRental = factory.createRental(11, user1.getIdUser(), room1.getIdRoom(), LocalDate.now(), LocalDate.now().plusDays(2));
                 rentalDAO.insertRental(newRental.getIdUser(), newRental.getIdRoom(), newRental.getStartDate().toString(), newRental.getEndDate().toString());
+
                 Payment newPayment = factory.createPayment(101, user1.getIdUser(), 500.0, LocalDate.now(), "Paid");
                 paymentDAO.insertPayment(101, newPayment.getAmount(), newPayment.getPaymentDate().toString(), newPayment.getStatus());
+
                 System.out.println("Abstract Factory Example:\n");
                 System.out.println("Created User: " + user1);
                 System.out.println("Created Room: " + room1);
@@ -316,7 +325,19 @@ public class Main {
                 System.out.println("Payment for user " + user1.getName() + " is: " + newPayment);
                 break;
             case 4:
-                System.out.println("Opțiunea Danusia selectată");
+                System.out.println("Opțiunea Danusia Command pattern selectată");
+
+                CommandInvoker invoker = new CommandInvoker();
+
+                //create a rental
+                Rental rentalId12 = factory.createRental(12, 1, 1, LocalDate.now(), LocalDate.now().plusDays(3));
+                CreateRentalCommand rentalCommand = new CreateRentalCommand(rentalDAO, rentalId12);
+                invoker.executeCommand(rentalCommand);
+
+                //make a payment
+                Payment paymentId12 = factory.createPayment(12, 1, 300.0, LocalDate.now(), "Paid");
+                MakePaymentCommand paymentCommand = new MakePaymentCommand(paymentDAO, paymentId12);
+                invoker.executeCommand(paymentCommand);
                 break;
             default:
                 System.out.println("Selecție  invalidă!");
@@ -328,4 +349,7 @@ public class Main {
     }
 
 
+
+
 }
+

@@ -1,4 +1,4 @@
-package ro.ase.csie.db;
+package ro.ase.csie.dao;
 
 
 import ro.ase.csie.models.Room;
