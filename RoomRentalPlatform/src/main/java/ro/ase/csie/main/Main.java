@@ -4,11 +4,13 @@ import ro.ase.csie.db.*;
 import ro.ase.csie.designPatterns.CristinaObserver.IUser;
 import ro.ase.csie.designPatterns.CristinaObserver.ORoom;
 import ro.ase.csie.designPatterns.CristinaObserver.OUser;
+import ro.ase.csie.designPatterns.MihneaBuilder.RoomBuilder;
 import ro.ase.csie.models.User;
 import ro.ase.csie.models.Room;
 import ro.ase.csie.models.Rental;
 import ro.ase.csie.models.Payment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,6 +22,7 @@ public class Main {
         DatabaseManager dbManager = DatabaseManager.getInstance();
 
         //DAO
+
         UserDAO userDAO = new UserDAO(dbManager.getConnection());
         RoomDAO roomDAO = new RoomDAO(dbManager.getConnection());
         RentalDAO rentalDAO = new RentalDAO(dbManager.getConnection());
@@ -90,7 +93,6 @@ public class Main {
 
 
 
-
         // Meniu pentru selectarea design pattern-ului
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n\n\nSelectati design patternul pe care doriti sa il exemplificati:");
@@ -128,6 +130,7 @@ public class Main {
                         // Creăm și ocupăm două săli exemplu
                         ORoom salaJ = new ORoom("Room J");
                         ORoom salaD = new ORoom("Room D");
+                        ORoom salaE = new ORoom("Room E");
 
                         // Sălile sunt ocupate și notificările sunt trimise
                         salaJ.ocupaSala();
@@ -149,10 +152,87 @@ public class Main {
                 }
                 break;
             }
+
+
+
             // Alte cazuri pentru selecțiile 1, 3, 4
             case 1:
                 System.out.println("Opțiunea Mihnea selectată");
+                String userResponse;
+
+                do {
+                    System.out.println("Do you want to add a new room? (yes/no)");
+                    userResponse = scanner.nextLine().trim().toLowerCase();
+
+                    if (userResponse.equals("yes")) {
+                        try {
+                            RoomBuilder builder = new RoomBuilder();
+
+                            int idRoom;
+                            while (true) {
+                                System.out.print("Enter the room ID: ");
+                                idRoom = readInteger(scanner);
+                                if (isIdUnique(rooms, idRoom)) {
+                                    break;
+                                } else {
+                                    System.out.println("A room with this ID already exists. Please enter a unique ID.");
+                                }
+                            }
+
+                            System.out.print("Enter the room name: ");
+                            String name = scanner.nextLine();
+
+                            System.out.print("Enter the floor: ");
+                            int floor = readInteger(scanner);
+
+                            System.out.print("Enter the location: ");
+                            String location = scanner.nextLine();
+
+                            System.out.print("Enter the capacity: ");
+                            int capacity = readInteger(scanner);
+
+                            System.out.print("Enter the room type: ");
+                            String type = scanner.nextLine();
+
+                            System.out.print("Does it have a projector? (true/false): ");
+                            boolean hasProjector = readBoolean(scanner);
+
+                            System.out.print("Does it have a smart board? (true/false): ");
+                            boolean hasSmartBoard = readBoolean(scanner);
+
+                            System.out.print("Enter the price per day: ");
+                            double pricePerDay = readInteger(scanner);
+
+                            Room room = builder
+                                    .setName(name)
+                                    .setFloor(floor)
+                                    .setLocation(location)
+                                    .setCapacity(capacity)
+                                    .setType(type)
+                                    .setHasProjector(hasProjector)
+                                    .setHasSmartBoard(hasSmartBoard)
+                                    .setPricePerDay(pricePerDay)
+                                    .build();
+
+                            rooms.add(room);
+                            roomDAO.insertRoom(room);
+
+                            System.out.println("Room has been added: " + room);
+                        } catch (Exception e) {
+                            System.out.println("Error while entering data: " + e.getMessage());
+                        }
+                    } else if (!userResponse.equals("no")) {
+                        System.out.println("Invalid response. Please enter 'yes' or 'no'.");
+                    }
+
+                } while (!userResponse.equals("no"));
+
+                System.out.println("Final list of rooms:");
+                for (Room room : rooms) {
+                    System.out.println(room);
+                }
                 break;
+
             case 3:
                 System.out.println("Opțiunea Cosmin selectată");
                 break;
@@ -174,4 +254,40 @@ public class Main {
         // Închide conexiunea la baza de date
         dbManager.closeConnection();
     }
+
+
+
+    private static int readInteger(Scanner scanner) {
+        while (true) {
+            try {
+                return Integer.parseInt(scanner.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. Please enter a valid number: ");
+            }
+        }
+    }
+
+    private static boolean readBoolean(Scanner scanner) {
+        while (true) {
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("true")) {
+                return true;
+            } else if (input.equals("false")) {
+                return false;
+            } else {
+                System.out.print("Invalid input. Please enter 'true' or 'false': ");
+            }
+        }
+    }
+
+    private static boolean isIdUnique(List<Room> listRoom, int idRoom) {
+        for (Room room : listRoom) {
+            if (room.getIdRoom() == idRoom) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }
+

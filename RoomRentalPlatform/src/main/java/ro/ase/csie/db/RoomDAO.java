@@ -36,6 +36,26 @@ public class RoomDAO {
         }
     }
 
+    public void insertRoom(Room room) {
+        String query = "INSERT INTO Room (name, floor, location, capacity, type, is_available, has_projector, has_smartBoard, price_per_day) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, room.getName());
+            stmt.setInt(2, room.getFloor());
+            stmt.setString(3, room.getLocation());
+            stmt.setDouble(4, room.getCapacity());
+            stmt.setString(5, room.getType());
+            stmt.setBoolean(6, room.isAvailable());
+            stmt.setBoolean(7, room.hasProjector());
+            stmt.setBoolean(8, room.hasSmartBoard());
+            stmt.setDouble(9, room.getPricePerDay());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Room> getAllRooms() {
         List<Room> rooms = new ArrayList<>();
         String query = "SELECT * FROM Room";
