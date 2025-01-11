@@ -1,12 +1,16 @@
 package ro.ase.csie.main;
 
 import ro.ase.csie.db.*;
+import ro.ase.csie.designPatterns.CristinaObserver.IUser;
+import ro.ase.csie.designPatterns.CristinaObserver.ORoom;
+import ro.ase.csie.designPatterns.CristinaObserver.OUser;
 import ro.ase.csie.models.User;
 import ro.ase.csie.models.Room;
 import ro.ase.csie.models.Rental;
 import ro.ase.csie.models.Payment;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -78,6 +82,93 @@ public class Main {
 
             System.out.println("Updated user: " + firstUser);
         }
+
+
+
+
+
+
+
+
+        // Meniu pentru selectarea design pattern-ului
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("\n\n\n\nSelectati design patternul pe care doriti sa il exemplificati:");
+        System.out.println("1. Mihnea");
+        System.out.println("2. Cristina Observer");
+        System.out.println("3. Cosmin");
+        System.out.println("4. Danusia");
+
+        int selection = scanner.nextInt();
+        scanner.nextLine(); // Consumă newline după introducerea numărului
+
+// Implementăm cazul pentru "Observer"
+        switch (selection) {
+            case 2: {
+                System.out.println("Selecteaza nume utilizator: ");
+                for (User user : users) {
+                    System.out.println(user.getName()); // Afișăm toți utilizatorii
+                }
+                String selectedUserName = scanner.nextLine();
+
+                // Căutăm utilizatorul selectat
+                IUser selectedUser = null;
+                for (User user : users) {
+                    if (user.getName().equals(selectedUserName)) {
+                        selectedUser = new OUser(user.getName()); // Creăm un obiect OUser
+                        break;
+                    }
+                }
+
+                if (selectedUser != null) {
+                    System.out.println("Vrei sa vezi ce sali sunt disponibile? DA/NU");
+                    String response = scanner.nextLine();
+
+                    if ("DA".equalsIgnoreCase(response)) {
+                        // Creăm și ocupăm două săli exemplu
+                        ORoom salaJ = new ORoom("Room J");
+                        ORoom salaD = new ORoom("Room D");
+
+                        // Sălile sunt ocupate și notificările sunt trimise
+                        salaJ.ocupaSala();
+                        salaD.ocupaSala();
+
+                        // Abonăm utilizatorul la toate sălile disponibile
+                        for (Room room : rooms) {
+                            if (room.isAvailable()) {
+                                ORoom oroom = new ORoom(room.getName());
+                                oroom.abonareUtilizator(selectedUser);
+                                oroom.elibereazaSala(); // Notificăm utilizatorul
+                            }
+                        }
+                    } else {
+                        System.out.println("Programul se încheie.");
+                    }
+                } else {
+                    System.out.println("Utilizatorul selectat nu a fost găsit.");
+                }
+                break;
+            }
+            // Alte cazuri pentru selecțiile 1, 3, 4
+            case 1:
+                System.out.println("Opțiunea Mihnea selectată");
+                break;
+            case 3:
+                System.out.println("Opțiunea Cosmin selectată");
+                break;
+            case 4:
+                System.out.println("Opțiunea Danusia selectată");
+                break;
+            default:
+                System.out.println("Selecție invalidă!");
+        }
+
+
+
+
+
+
+
+
 
         // Închide conexiunea la baza de date
         dbManager.closeConnection();
