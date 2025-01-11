@@ -43,7 +43,7 @@ public class DatabaseManager {
                     "name TEXT NOT NULL, " +
                     "floor INTEGER NOT NULL, " +
                     "location TEXT, " +
-                    "capacity REAL NOT NULL, " +
+                    "capacity INT NOT NULL, " +
                     "type TEXT NOT NULL, " +
                     "is_available BOOLEAN NOT NULL, " +
                     "has_projector BOOLEAN NOT NULL, " +
@@ -58,7 +58,7 @@ public class DatabaseManager {
                     "start_date TEXT NOT NULL, " +
                     "end_date TEXT NOT NULL, " +
                     "FOREIGN KEY(id_user) REFERENCES User(id_user) ON DELETE CASCADE, " +
-                            "FOREIGN KEY(id_room) REFERENCES Room(id_room) ON DELETE CASCADE);");
+                    "FOREIGN KEY(id_room) REFERENCES Room(id_room) ON DELETE CASCADE);");
 //                    "FOREIGN KEY(id_room) REFERENCES Room(id_room) ON DELETE CASCADE, " +
 //                    "CONSTRAINT no_overlap UNIQUE (id_room, start_date, end_date));");
 

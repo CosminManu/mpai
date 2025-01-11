@@ -15,7 +15,7 @@ public class RoomDAO {
         this.connection = connection;
     }
 
-    public void insertRoom(String name, int floor, String location, double capacity, String type, boolean isAvailable,
+    public void insertRoom(String name, int floor, String location, int capacity, String type, boolean isAvailable,
                            boolean hasProjector, boolean hasSmartBoard, double pricePerDay) {
         String query = "INSERT INTO Room (name, floor, location, capacity, type, is_available, has_projector, has_smartBoard, price_per_day) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -24,7 +24,7 @@ public class RoomDAO {
             stmt.setString(1, name);
             stmt.setInt(2, floor);
             stmt.setString(3, location);
-            stmt.setDouble(4, capacity);
+            stmt.setInt(4, capacity);
             stmt.setString(5, type);
             stmt.setBoolean(6, isAvailable);
             stmt.setBoolean(7, hasProjector);
@@ -44,7 +44,7 @@ public class RoomDAO {
             stmt.setString(1, room.getName());
             stmt.setInt(2, room.getFloor());
             stmt.setString(3, room.getLocation());
-            stmt.setDouble(4, room.getCapacity());
+            stmt.setInt(4, room.getCapacity());
             stmt.setString(5, room.getType());
             stmt.setBoolean(6, room.isAvailable());
             stmt.setBoolean(7, room.hasProjector());
@@ -64,7 +64,7 @@ public class RoomDAO {
              ResultSet rs = stmt.executeQuery(query)) {
             while (rs.next()) {
                 Room room = new Room(rs.getInt("id_room"), rs.getString("name"), rs.getInt("floor"), rs.getString("location"),
-                        rs.getDouble("capacity"), rs.getString("type"), rs.getBoolean("is_available"),
+                        rs.getInt("capacity"), rs.getString("type"), rs.getBoolean("is_available"),
                         rs.getBoolean("has_projector"), rs.getBoolean("has_smartBoard"), rs.getDouble("price_per_day"));
                 rooms.add(room);
             }
@@ -85,7 +85,6 @@ public class RoomDAO {
             e.printStackTrace();
         }
     }
-
 
 
 }

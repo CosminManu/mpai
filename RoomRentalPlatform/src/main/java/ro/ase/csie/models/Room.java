@@ -5,14 +5,15 @@ public class Room {
     private String name;
     private int floor;
     private String location;
-    private double capacity;
+    private int capacity;
     private String type;
     private boolean isAvailable;
     private boolean hasProjector;
     private boolean hasSmartBoard;
     private double pricePerDay;
+//    private List<IUser> users; //Mihnea
 
-    public Room(int idRoom, String name, int floor, String location, double capacity, String type, boolean isAvailable,
+    public Room(int idRoom, String name, int floor, String location, int capacity, String type, boolean isAvailable,
                 boolean hasProjector, boolean hasSmartBoard, double pricePerDay) {
         this.idRoom = idRoom;
         this.name = name;
@@ -24,6 +25,11 @@ public class Room {
         this.hasProjector = hasProjector;
         this.hasSmartBoard = hasSmartBoard;
         this.pricePerDay = pricePerDay;
+        //this.users = null;
+    }
+
+    public Room(String name) {
+        this.name = name;
     }
 
     public int getIdRoom() {
@@ -58,11 +64,11 @@ public class Room {
         this.location = location;
     }
 
-    public double getCapacity() {
+    public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(double capacity) {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 

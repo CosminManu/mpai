@@ -1,16 +1,16 @@
-package ro.ase.csie.designPatterns.CristinaObserver;
+package ro.ase.csie.designPatterns.Observer;
+
+import ro.ase.csie.models.Room;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ORoom implements IRoomNotifier {
-    private String name; // Numele sălii
-    private boolean isAvailable; // Disponibilitatea sălii
+public class ORoom extends Room implements IRoomNotifier {
+
     private List<IUser> users; // Lista utilizatorilor abonați
 
     public ORoom(String name) {
-        this.name = name;
-        this.isAvailable = true; // Inițial sala este disponibilă
+        super(name);
         this.users = new ArrayList<>();
     }
 
@@ -33,20 +33,30 @@ public class ORoom implements IRoomNotifier {
 
     // Metodă pentru a elibera sala și a trimite notificări
     public void elibereazaSala() {
-        this.isAvailable = true;
-        String mesaj = "Sala " + this.name + " este acum disponibilă.";
+        this.setAvailable(true);
+        String mesaj = "Sala " + this.getName() + " este acum disponibilă.";
         notificare(mesaj);
     }
 
     // Metodă pentru a ocupa sala
     public void ocupaSala() {
-        this.isAvailable = false;
-        String mesaj = "Sala " + this.name + " este acum ocupata.";
+        this.setAvailable(false);
+        String mesaj = "Sala " + this.getName() + " este acum ocupata.";
         notificare(mesaj);
     }
 
     // Getter pentru disponibilitate
     public boolean esteDisponibila() {
-        return this.isAvailable;
+        return this.isAvailable();
     }
+
+    public List<IUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<IUser> users) {
+        this.users = users;
+    }
+
+
 }

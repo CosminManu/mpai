@@ -1,4 +1,4 @@
-package ro.ase.csie.designPatterns.MihneaBuilder;
+package ro.ase.csie.designPatterns.Builder;
 
 import ro.ase.csie.models.Room;
 

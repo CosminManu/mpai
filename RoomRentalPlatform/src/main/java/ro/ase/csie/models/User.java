@@ -16,6 +16,13 @@ public class User {
         this.email = email;
     }
 
+    public User() {
+    }
+
+    public User(String name) {
+        this.name = name;
+    }
+
     public int getIdUser() {
         return idUser;
     }

@@ -1,4 +1,4 @@
-package ro.ase.csie.designPatterns.CristinaObserver;
+package ro.ase.csie.designPatterns.Observer;
 
 // IUser.java
 public interface IUser {

@@ -59,5 +59,4 @@ public class UserDAO {
     }
 
 
-    // Alte metode (insert, delete) pentru User
 }

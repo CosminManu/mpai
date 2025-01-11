@@ -1,15 +1,18 @@
 package ro.ase.csie.main;
 
 import ro.ase.csie.db.*;
-import ro.ase.csie.designPatterns.CristinaObserver.IUser;
-import ro.ase.csie.designPatterns.CristinaObserver.ORoom;
-import ro.ase.csie.designPatterns.CristinaObserver.OUser;
-import ro.ase.csie.designPatterns.MihneaBuilder.RoomBuilder;
+import ro.ase.csie.designPatterns.AbstractFactory.ConcreteEntityFactory;
+import ro.ase.csie.designPatterns.AbstractFactory.EntityFactory;
+import ro.ase.csie.designPatterns.Observer.IUser;
+import ro.ase.csie.designPatterns.Observer.ORoom;
+import ro.ase.csie.designPatterns.Observer.OUser;
+import ro.ase.csie.designPatterns.Builder.RoomBuilder;
 import ro.ase.csie.models.User;
 import ro.ase.csie.models.Room;
 import ro.ase.csie.models.Rental;
 import ro.ase.csie.models.Payment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -53,6 +56,7 @@ public class Main {
 
         // Obține instanța DatabaseManager și DAO-ul pentru User
         DatabaseManager dbManager = DatabaseManager.getInstance();
+        EntityFactory factory = new ConcreteEntityFactory();
 
         //DAO
         UserDAO userDAO = new UserDAO(dbManager.getConnection());
@@ -65,12 +69,6 @@ public class Main {
 
         // Inserează date de test
         dbManager.insertTestData();
-        // Exemple de utilizare DAO pentru a insera date
-//        User user15=new User( "Alice", "alice1@example.com");
-//        userDAO.insertUser(user15);
-        //roomDAO.insertRoom("Room A", 1, "Building 1", 20, "Conference", true, true, true, 100.0);
-        //rentalDAO.insertRental(1, 1, "2025-01-01", "2025-01-05");
-        //paymentDAO.insertPayment(1, 500.0, "2025-01-06", "Paid");
 
 
         // Citește USERS din DB si afiseaza
@@ -106,31 +104,12 @@ public class Main {
         System.out.println("-------------------------------------------------------------\n");
 
 
-
-        // Modifică primul utilizator
-//        if (!users.isEmpty()) {
-//            User firstUser = users.get(0);
-//            firstUser.setName("Updated Name");
-//            firstUser.setEmail("updated_email@example.com");
-//
-//            // Actualizează utilizatorul în DB
-//            userDAO.updateUser(firstUser);
-//
-//            System.out.println("Updated user: " + firstUser);
-//        }
-
-
-
-
-
-
-
         // Meniu pentru selectarea design pattern-ului
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n\n\nSelectati design patternul pe care doriti sa il exemplificati:");
-        System.out.println("1. Mihnea Builder");
-        System.out.println("2. Cristina Observer");
-        System.out.println("3. Cosmin");
+        System.out.println("1. Builder");
+        System.out.println("2. Observer");
+        System.out.println("3. Abstract Factory");
         System.out.println("4. Danusia");
 
         int selection = scanner.nextInt();
@@ -140,7 +119,7 @@ public class Main {
         switch (selection) {
 
             case 1: {
-                System.out.println("Opțiunea Mihnea selectată");
+
                 String userResponse;
 
                 do {
@@ -234,29 +213,81 @@ public class Main {
                 }
 
                 if (selectedUser != null) {
-                    System.out.println("Vrei sa rezervi o sala? REZERVA");
-                    String response = scanner.nextLine();
+                    System.out.println("Ce doresti sa faci?\n-> caz1: REZERVA\n-> caz2: ELIBEREAZA\n-> caz3: STARE SALI");
+                    String response = scanner.nextLine().toUpperCase();
 
-                    if ("REZERVA".equalsIgnoreCase(response)) {
-                        // Creăm și ocupăm două săli exemplu
-                        ORoom salaJ = new ORoom("Room J");
-                        ORoom salaD = new ORoom("Room D");
-                        ORoom salaE = new ORoom("Room E");
+                    switch (response) {
+                        case "REZERVA":
+                            System.out.println("Camere disponibile:");
+                            for (Room room : rooms) {
+                                if (room.isAvailable()) {
+                                    System.out.println("ID: " + room.getIdRoom() + ", " + room.getName() + ", " + room.getType() + ", Etaj: " + room.getFloor() + ", Locatie: " + room.getLocation() + ", Capacitate: " + room.getCapacity() + ", Are proiector: " + room.hasProjector() + ", Are SmartBoard: " + room.hasSmartBoard() + ", Pretul/zi: " + room.getPricePerDay());
 
-                        // Sălile sunt ocupate și notificările sunt trimise
-                        salaJ.ocupaSala();
-                        salaD.ocupaSala();
-
-                        // Abonăm utilizatorul la toate sălile disponibile
-                        for (Room room : rooms) {
-                            if (room.isAvailable()) {
-                                ORoom oroom = new ORoom(room.getName());
-                                oroom.abonareUtilizator(selectedUser);
-                                oroom.elibereazaSala(); // Notificăm utilizatorul
+                                }
                             }
-                        }
-                    } else {
-                        System.out.println("Programul se încheie.");
+
+                            System.out.println("Selecteaza Camera (introdu ID-ul camerei):");
+                            int selectedRoomId = Integer.parseInt(scanner.nextLine());
+                            ORoom selectedRoom = null;
+
+                            for (Room room : rooms) {
+                                if (room.getIdRoom() == selectedRoomId && room.isAvailable()) {
+                                    room.setAvailable(false);
+                                    roomDAO.updateRoomAvailability(selectedRoomId, false);
+                                    selectedRoom = new ORoom(room.getName());
+                                    break;
+                                }
+                            }
+
+                            if (selectedRoom != null) {
+                                selectedRoom.ocupaSala();
+                                System.out.println("Sala " + selectedRoom.getName() + " a fost rezervata cu succes.");
+                            } else {
+                                System.out.println("ID-ul introdus nu corespunde unei camere disponibile.");
+                            }
+                            break;
+
+                        case "ELIBEREAZA":
+                            System.out.println("Camere ocupate:");
+                            for (Room room : rooms) {
+                                if (!room.isAvailable()) {
+                                    System.out.println("ID: " + room.getIdRoom() + ", Nume: " + room.getName());
+                                }
+                            }
+
+                            System.out.println("Selecteaza Camera (introdu ID-ul camerei):");
+                            int roomIdToRelease = Integer.parseInt(scanner.nextLine());
+                            ORoom roomToRelease = null;
+
+                            for (Room room : rooms) {
+                                if (room.getIdRoom() == roomIdToRelease && !room.isAvailable()) {
+                                    room.setAvailable(true);
+                                    roomDAO.updateRoomAvailability(roomIdToRelease, true);
+                                    roomToRelease = new ORoom(room.getName());
+                                    break;
+                                }
+                            }
+
+                            if (roomToRelease != null) {
+                                roomToRelease.elibereazaSala();
+                                System.out.println("Sala " + roomToRelease.getName() + " a fost eliberata cu succes.");
+                            } else {
+                                System.out.println("ID-ul introdus nu corespunde unei camere ocupate.");
+                            }
+                            break;
+
+                        case "STARE SALI":
+                            System.out.println("Lista sali si disponibilitatea lor:");
+                            for (Room room : rooms) {
+                                String status = room.isAvailable() ? "Disponibila" : "Ocupata";
+                                System.out.println("ID: " + room.getIdRoom() + ", " + room.getName() + ", " + room.getType() + ", Locatie: " + room.getLocation() + ", Capacitate: " + room.getCapacity() + ", Status: " + status);
+
+                            }
+                            break;
+
+                        default:
+                            System.out.println("Optiune invalida.");
+                            break;
                     }
                 } else {
                     System.out.println("Utilizatorul selectat nu a fost găsit.");
@@ -265,11 +296,24 @@ public class Main {
             }
 
 
-
-            // Alte cazuri pentru selecțiile 3, 4
-
             case 3:
-                System.out.println("Opțiunea Cosmin selectată");
+                System.out.println("Opțiunea Cosmin Abstract Factory selectată");
+
+                User user1 = factory.createUser(102, "Elon", "elon.musk@twitter.com");
+                userDAO.insertUser(user1);
+
+
+                Room room1 = factory.createRoom(11, "Executive Room", 2, "Main Building", 15, "Meeting", true, true, true, 250.0);
+                roomDAO.insertRoom(room1);
+                Rental newRental = factory.createRental(11, user1.getIdUser(), room1.getIdRoom(), LocalDate.now(), LocalDate.now().plusDays(2));
+                rentalDAO.insertRental(newRental.getIdUser(), newRental.getIdRoom(), newRental.getStartDate().toString(), newRental.getEndDate().toString());
+                Payment newPayment = factory.createPayment(101, user1.getIdUser(), 500.0, LocalDate.now(), "Paid");
+                paymentDAO.insertPayment(101, newPayment.getAmount(), newPayment.getPaymentDate().toString(), newPayment.getStatus());
+                System.out.println("Abstract Factory Example:\n");
+                System.out.println("Created User: " + user1);
+                System.out.println("Created Room: " + room1);
+                System.out.println("Created Rental: " + newRental);
+                System.out.println("Payment for user " + user1.getName() + " is: " + newPayment);
                 break;
             case 4:
                 System.out.println("Opțiunea Danusia selectată");
@@ -279,19 +323,9 @@ public class Main {
         }
 
 
-
-
-
-
-
-
-
         // Închide conexiunea la baza de date
         dbManager.closeConnection();
     }
 
 
-
-
 }
-
