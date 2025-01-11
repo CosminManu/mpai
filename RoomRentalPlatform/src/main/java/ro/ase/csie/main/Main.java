@@ -22,7 +22,6 @@ public class Main {
         DatabaseManager dbManager = DatabaseManager.getInstance();
 
         //DAO
-
         UserDAO userDAO = new UserDAO(dbManager.getConnection());
         RoomDAO roomDAO = new RoomDAO(dbManager.getConnection());
         RentalDAO rentalDAO = new RentalDAO(dbManager.getConnection());
@@ -40,17 +39,16 @@ public class Main {
         //rentalDAO.insertRental(1, 1, "2025-01-01", "2025-01-05");
         //paymentDAO.insertPayment(1, 500.0, "2025-01-06", "Paid");
 
-        // Citește utilizatorii din DB
+
+        // Citește USERS din DB si afiseaza
         List<User> users = userDAO.getAllUsers();
         System.out.println("Users from DB:");
         for (User user : users) {
             System.out.println(user);
         }
-
-        //Tot citire
         System.out.println("-------------------------------------------------------------\n");
 
-// Afisăm camerele din baza de date
+        // Afisăm ROOMS din DB
         List<Room> rooms = roomDAO.getAllRooms();
         System.out.println("Rooms from DB:");
         for (Room room : rooms) {
@@ -58,7 +56,7 @@ public class Main {
         }
         System.out.println("-------------------------------------------------------------\n");
 
-// Afisăm închirierile (Rentals)
+        // Afisăm RENTALS din DB
         List<Rental> rentals = rentalDAO.getAllRentals();
         System.out.println("Rentals from DB:");
         for (Rental rental : rentals) {
@@ -66,7 +64,7 @@ public class Main {
         }
         System.out.println("-------------------------------------------------------------\n");
 
-// Afisăm plățile (Payments)
+        // Afisăm PAYMENTS din DB
         List<Payment> payments = paymentDAO.getAllPayments();
         System.out.println("Payments from DB:");
         for (Payment payment : payments) {
@@ -75,17 +73,18 @@ public class Main {
         System.out.println("-------------------------------------------------------------\n");
 
 
+
         // Modifică primul utilizator
-        if (!users.isEmpty()) {
-            User firstUser = users.get(0);
-            firstUser.setName("Updated Name");
-            firstUser.setEmail("updated_email@example.com");
-
-            // Actualizează utilizatorul în DB
-            userDAO.updateUser(firstUser);
-
-            System.out.println("Updated user: " + firstUser);
-        }
+//        if (!users.isEmpty()) {
+//            User firstUser = users.get(0);
+//            firstUser.setName("Updated Name");
+//            firstUser.setEmail("updated_email@example.com");
+//
+//            // Actualizează utilizatorul în DB
+//            userDAO.updateUser(firstUser);
+//
+//            System.out.println("Updated user: " + firstUser);
+//        }
 
 
 
@@ -96,7 +95,7 @@ public class Main {
         // Meniu pentru selectarea design pattern-ului
         Scanner scanner = new Scanner(System.in);
         System.out.println("\n\n\n\nSelectati design patternul pe care doriti sa il exemplificati:");
-        System.out.println("1. Mihnea");
+        System.out.println("1. Mihnea Builder");
         System.out.println("2. Cristina Observer");
         System.out.println("3. Cosmin");
         System.out.println("4. Danusia");
@@ -106,57 +105,8 @@ public class Main {
 
 // Implementăm cazul pentru "Observer"
         switch (selection) {
-            case 2: {
-                System.out.println("Selecteaza nume utilizator: ");
-                for (User user : users) {
-                    System.out.println(user.getName()); // Afișăm toți utilizatorii
-                }
-                String selectedUserName = scanner.nextLine();
 
-                // Căutăm utilizatorul selectat
-                IUser selectedUser = null;
-                for (User user : users) {
-                    if (user.getName().equals(selectedUserName)) {
-                        selectedUser = new OUser(user.getName()); // Creăm un obiect OUser
-                        break;
-                    }
-                }
-
-                if (selectedUser != null) {
-                    System.out.println("Vrei sa rezervi o sala? REZERVA");
-                    String response = scanner.nextLine();
-
-                    if ("REZERVA".equalsIgnoreCase(response)) {
-                        // Creăm și ocupăm două săli exemplu
-                        ORoom salaJ = new ORoom("Room J");
-                        ORoom salaD = new ORoom("Room D");
-                        ORoom salaE = new ORoom("Room E");
-
-                        // Sălile sunt ocupate și notificările sunt trimise
-                        salaJ.ocupaSala();
-                        salaD.ocupaSala();
-
-                        // Abonăm utilizatorul la toate sălile disponibile
-                        for (Room room : rooms) {
-                            if (room.isAvailable()) {
-                                ORoom oroom = new ORoom(room.getName());
-                                oroom.abonareUtilizator(selectedUser);
-                                oroom.elibereazaSala(); // Notificăm utilizatorul
-                            }
-                        }
-                    } else {
-                        System.out.println("Programul se încheie.");
-                    }
-                } else {
-                    System.out.println("Utilizatorul selectat nu a fost găsit.");
-                }
-                break;
-            }
-
-
-
-            // Alte cazuri pentru selecțiile 1, 3, 4
-            case 1:
+            case 1: {
                 System.out.println("Opțiunea Mihnea selectată");
                 String userResponse;
 
@@ -232,6 +182,58 @@ public class Main {
                     System.out.println(room);
                 }
                 break;
+            }
+
+            case 2: {
+                System.out.println("Selecteaza nume utilizator: ");
+                for (User user : users) {
+                    System.out.println(user.getName()); // Afișăm toți utilizatorii
+                }
+                String selectedUserName = scanner.nextLine();
+
+                // Căutăm utilizatorul selectat
+                IUser selectedUser = null;
+                for (User user : users) {
+                    if (user.getName().equals(selectedUserName)) {
+                        selectedUser = new OUser(user.getName()); // Creăm un obiect OUser
+                        break;
+                    }
+                }
+
+                if (selectedUser != null) {
+                    System.out.println("Vrei sa rezervi o sala? REZERVA");
+                    String response = scanner.nextLine();
+
+                    if ("REZERVA".equalsIgnoreCase(response)) {
+                        // Creăm și ocupăm două săli exemplu
+                        ORoom salaJ = new ORoom("Room J");
+                        ORoom salaD = new ORoom("Room D");
+                        ORoom salaE = new ORoom("Room E");
+
+                        // Sălile sunt ocupate și notificările sunt trimise
+                        salaJ.ocupaSala();
+                        salaD.ocupaSala();
+
+                        // Abonăm utilizatorul la toate sălile disponibile
+                        for (Room room : rooms) {
+                            if (room.isAvailable()) {
+                                ORoom oroom = new ORoom(room.getName());
+                                oroom.abonareUtilizator(selectedUser);
+                                oroom.elibereazaSala(); // Notificăm utilizatorul
+                            }
+                        }
+                    } else {
+                        System.out.println("Programul se încheie.");
+                    }
+                } else {
+                    System.out.println("Utilizatorul selectat nu a fost găsit.");
+                }
+                break;
+            }
+
+
+
+            // Alte cazuri pentru selecțiile 3, 4
 
             case 3:
                 System.out.println("Opțiunea Cosmin selectată");
