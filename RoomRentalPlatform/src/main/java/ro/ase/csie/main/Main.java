@@ -117,7 +117,7 @@ public class Main {
         System.out.println("1. Builder");
         System.out.println("2. Observer");
         System.out.println("3. Abstract Factory");
-        System.out.println("4. Danusia Command");
+        System.out.println("4. Command");
 
         int selection = scanner.nextInt();
         scanner.nextLine(); // Consumă newline după introducerea numărului
@@ -302,28 +302,62 @@ public class Main {
                 break;
             }
 
-            case 3:
-                System.out.println("Opțiunea Cosmin Abstract Factory selectată");
+            case 3: {
+                String userResponse;
 
-                User user1 = factory.createUser(102, "Elon", "elon.musk@twitter.com");
-                userDAO.insertUser(user1);
+                do {
+                    System.out.println("Do you want to create a new entity using Abstract Factory? (yes/no)");
+                    userResponse = scanner.nextLine().trim().toLowerCase();
 
+                    if (userResponse.equals("yes")) {
+                        try {
+                            System.out.print("Enter user name: ");
+                            String userName = scanner.nextLine();
+                            System.out.print("Enter user email: ");
+                            String userEmail = scanner.nextLine();
+                            User user = factory.createUser(101, userName, userEmail);
+                            userDAO.insertUser(user);
 
-                Room room1 = factory.createRoom(11, "Executive Room", 2, "Main Building", 15, "Meeting", true, true, true, 250.0);
-                roomDAO.insertRoom(room1);
+                            System.out.print("Enter room name: ");
+                            String roomName = scanner.nextLine();
+                            System.out.print("Enter room floor: ");
+                            int floor = readInteger(scanner);
+                            System.out.print("Enter room capacity: ");
+                            int capacity = readInteger(scanner);
+                            System.out.print("Enter room type: ");
+                            String type = scanner.nextLine();
+                            System.out.print("Enter room location: ");
+                            String location = scanner.nextLine();
+                            System.out.print("Does it have a projector? (true/false): ");
+                            boolean hasProjector = Boolean.parseBoolean(scanner.nextLine());
+                            System.out.print("Does it have a smart board? (true/false): ");
+                            boolean hasSmartBoard = Boolean.parseBoolean(scanner.nextLine());
+                            System.out.print("Enter room price per day: ");
+                            double pricePerDay = readInteger(scanner);
 
-                Rental newRental = factory.createRental(11, user1.getIdUser(), room1.getIdRoom(), LocalDate.now(), LocalDate.now().plusDays(2));
-                rentalDAO.insertRental(newRental.getIdUser(), newRental.getIdRoom(), newRental.getStartDate().toString(), newRental.getEndDate().toString());
+                            Room room = factory.createRoom(201, roomName, floor, location, capacity, type, true, hasProjector, hasSmartBoard, pricePerDay);
+                            roomDAO.insertRoom(room);
 
-                Payment newPayment = factory.createPayment(101, user1.getIdUser(), 500.0, LocalDate.now(), "Paid");
-                paymentDAO.insertPayment(101, newPayment.getAmount(), newPayment.getPaymentDate().toString(), newPayment.getStatus());
+                            Rental rental = factory.createRental(301, user.getIdUser(), room.getIdRoom(), LocalDate.now(), LocalDate.now().plusDays(5));
+                            rentalDAO.insertRental(rental.getIdUser(), rental.getIdRoom(), rental.getStartDate().toString(), rental.getEndDate().toString());
 
-                System.out.println("Abstract Factory Example:\n");
-                System.out.println("Created User: " + user1);
-                System.out.println("Created Room: " + room1);
-                System.out.println("Created Rental: " + newRental);
-                System.out.println("Payment for user " + user1.getName() + " is: " + newPayment);
+                            Payment payment = factory.createPayment(401, user.getIdUser(), 1500.0, LocalDate.now(), "Paid");
+                            paymentDAO.insertPayment(payment.getIdUser(), payment.getAmount(), payment.getPaymentDate().toString(), payment.getStatus());
+
+                            System.out.println("Created User:\n  ID: " + user.getIdUser() + "\n  Name: " + user.getName() + "\n  Email: " + user.getEmail());
+                            System.out.println("Created Room:\n  ID: " + room.getIdRoom() + "\n  Name: " + room.getName() + "\n  Type: " + room.getType() + "\n  Location: " + room.getLocation() + "\n  Capacity: " + room.getCapacity() + "\n  Price per day: " + room.getPricePerDay());
+                            System.out.println("Created Rental:\n  Rental ID: " + rental.getIdRental() + "\n  User ID: " + rental.getIdUser() + "\n  Room ID: " + rental.getIdRoom() + "\n  Start Date: " + rental.getStartDate() + "\n  End Date: " + rental.getEndDate());
+                            System.out.println("Created Payment:\n  Payment ID: " + payment.getIdPayment() + "\n  User ID: " + payment.getIdUser() + "\n  Amount: " + payment.getAmount() + "\n  Date: " + payment.getPaymentDate() + "\n  Status: " + payment.getStatus());
+                        } catch (Exception e) {
+                            System.out.println("Error while creating entities: " + e.getMessage());
+                        }
+                    } else if (!userResponse.equals("no")) {
+                        System.out.println("Invalid response. Please enter 'yes' or 'no'.");
+                    }
+                } while (!userResponse.equals("no"));
+
                 break;
+            }
             case 4:
                 System.out.println("Opțiunea Danusia Command pattern selectată");
 
