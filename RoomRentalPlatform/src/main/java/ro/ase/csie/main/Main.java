@@ -319,7 +319,7 @@ public class Main {
                 System.out.println("Opțiunea Danusia selectată");
                 break;
             default:
-                System.out.println("Selecție invalidă!");
+                System.out.println("Selecție  invalidă!");
         }
 
 
