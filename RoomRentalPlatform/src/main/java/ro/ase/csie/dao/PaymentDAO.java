@@ -70,4 +70,20 @@ public class PaymentDAO {
         }
     }
 
+    public double getTotalPaymentsByUserId(int userId) {
+        String query = "SELECT SUM(amount) AS total FROM Payment WHERE id_user = ?";
+        double total = 0;
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                total = rs.getDouble("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
 }

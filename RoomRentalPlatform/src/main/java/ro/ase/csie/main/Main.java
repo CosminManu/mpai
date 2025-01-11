@@ -7,6 +7,7 @@ import ro.ase.csie.dao.UserDAO;
 import ro.ase.csie.db.*;
 import ro.ase.csie.designPatterns.AbstractFactory.ConcreteEntityFactory;
 import ro.ase.csie.designPatterns.AbstractFactory.EntityFactory;
+import ro.ase.csie.designPatterns.Command.CalculateTotalPaymentCommand;
 import ro.ase.csie.designPatterns.Observer.IUser;
 import ro.ase.csie.designPatterns.Observer.ORoom;
 import ro.ase.csie.designPatterns.Observer.OUser;
@@ -358,23 +359,85 @@ public class Main {
 
                 break;
             }
-            case 4:
-                System.out.println("Opțiunea Danusia Command pattern selectată");
+            case 4: {
+                String userResponse;
 
-                CommandInvoker invoker = new CommandInvoker();
+                do {
+                    System.out.println("Available Commands:\n1. Create a rental\n2. Make a payment\n3. Calculate total payments for a user");
+                    System.out.print("Enter the command you want to execute (1, 2, or 3): ");
+                    int commandChoice = readInteger(scanner);
 
-                //create a rental
-                Rental rentalId12 = factory.createRental(12, 1, 1, LocalDate.now(), LocalDate.now().plusDays(3));
-                CreateRentalCommand rentalCommand = new CreateRentalCommand(rentalDAO, rentalId12);
-                invoker.executeCommand(rentalCommand);
+                    switch (commandChoice) {
+                        case 1: {
+                            System.out.print("Enter rental start date (YYYY-MM-DD): ");
+                            String startDate = scanner.nextLine();
+                            System.out.print("Enter rental end date (YYYY-MM-DD): ");
+                            String endDate = scanner.nextLine();
+                            System.out.println("Available User IDs:");
+                            for (User user : userDAO.getAllUsers()) {
+                                System.out.println("  ID: " + user.getIdUser() + ", Name: " + user.getName());
+                            }
+                            System.out.print("Enter user ID for the rental: ");
+                            int rentalUserId = readInteger(scanner);
 
-                //make a payment
-                Payment paymentId12 = factory.createPayment(12, 1, 300.0, LocalDate.now(), "Paid");
-                MakePaymentCommand paymentCommand = new MakePaymentCommand(paymentDAO, paymentId12);
-                invoker.executeCommand(paymentCommand);
+                            System.out.println("Available Room IDs:");
+                            for (Room room : roomDAO.getAllRooms()) {
+                                System.out.println("  ID: " + room.getIdRoom() + ", Name: " + room.getName());
+                            }
+                            System.out.print("Enter room ID for the rental: ");
+                            int rentalRoomId = readInteger(scanner);
+
+                            Rental rental = factory.createRental(302, rentalUserId, rentalRoomId, LocalDate.parse(startDate), LocalDate.parse(endDate));
+                            CreateRentalCommand rentalCommand = new CreateRentalCommand(rentalDAO, rental);
+                            CommandInvoker invoker = new CommandInvoker();
+                            invoker.executeCommand(rentalCommand);
+                            System.out.println("Rental Command Executed:\n Rental ID: " + rental.getIdRental() + "\n User ID: " + rental.getIdUser() + "\n Room ID: " + rental.getIdRoom() + "\n Start Date: " + rental.getStartDate() + "\n End Date: " + rental.getEndDate());
+                            break;
+                        }
+                        case 2: {
+                            System.out.print("Enter payment amount: ");
+                            double amount = readInteger(scanner);
+                            System.out.println("Available User IDs:");
+                            for (User user : userDAO.getAllUsers()) {
+                                System.out.println("  ID: " + user.getIdUser() + ", Name: " + user.getName());
+                            }
+                            System.out.print("Enter user ID for the payment: ");
+                            int userId = readInteger(scanner);
+                            Payment payment = factory.createPayment(402, userId, amount, LocalDate.now(), "Paid");
+                            MakePaymentCommand paymentCommand = new MakePaymentCommand(paymentDAO, payment);
+                            CommandInvoker invoker = new CommandInvoker();
+                            invoker.executeCommand(paymentCommand);
+                            System.out.println("Payment Command Executed:\n Payment ID: " + payment.getIdPayment() + "\n User ID: " + payment.getIdUser() + "\n Amount: " + payment.getAmount() + "\n Date: " + payment.getPaymentDate() + "\n Status: " + payment.getStatus());
+                            break;
+                        }
+                        case 3: {
+                            System.out.println("Available User IDs:");
+                            for (User user : userDAO.getAllUsers()) {
+                                System.out.println("  ID: " + user.getIdUser() + ", Name: " + user.getName());
+                            }
+                            System.out.print("Enter user ID to calculate total payments: ");
+                            int userId = readInteger(scanner);
+
+                            CalculateTotalPaymentCommand totalPaymentCommand = new CalculateTotalPaymentCommand(paymentDAO, userId);
+                            CommandInvoker invoker = new CommandInvoker();
+                            invoker.executeCommand(totalPaymentCommand);
+                            break;
+                        }
+
+                        default:
+                            System.out.println("Invalid command choice. Please select 1, 2 or 3.");
+                    }
+
+                    System.out.print("Do you want to execute another command? (yes/no): ");
+                    userResponse = scanner.nextLine().trim().toLowerCase();
+
+                } while (!userResponse.equals("no"));
+
                 break;
+            }
+
             default:
-                System.out.println("Selecție  invalidă!");
+                System.out.println("Invalid choice. Please select a valid design pattern.");
         }
 
 
