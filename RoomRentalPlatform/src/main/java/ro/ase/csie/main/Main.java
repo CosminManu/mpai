@@ -309,62 +309,66 @@ public class Main {
                 System.out.print("Enter category (Standard, Premium, or Deluxe): ");
                 String category = scanner.nextLine().trim().toLowerCase();
 
-                try {
-                    boolean continueCreating = true;
-                    while (continueCreating) {
-                        System.out.println("What do you want to create in the " + category + " category?");
-                        System.out.println("1. User");
-                        System.out.println("2. Room");
-                        System.out.println("3. Exit category creation");
-                        System.out.print("Enter your choice: ");
-                        int creationChoice = readInteger(scanner);
+                if (!category.equals("standard") && !category.equals("premium") && !category.equals("deluxe")) {
+                    System.out.println("Invalid category entered. Please choose 'Standard', 'Premium', or 'Deluxe'.");
+                } else {
+                    try {
+                        boolean continueCreating = true;
+                        while (continueCreating) {
+                            System.out.println("What do you want to create in the " + category + " category?");
+                            System.out.println("1. User");
+                            System.out.println("2. Room");
+                            System.out.println("3. Exit category creation");
+                            System.out.print("Enter your choice: ");
+                            int creationChoice = readInteger(scanner);
 
-                        switch (creationChoice) {
-                            case 1: {
-                                System.out.print("Enter user name for " + category + " category: ");
-                                String userName = scanner.nextLine();
-                                System.out.print("Enter user email for " + category + " category: ");
-                                String userEmail = scanner.nextLine();
-                                int userId = category.equals("standard") ? 101 : category.equals("premium") ? 102 : 103;
-                                User user = factory.createUser(userId, userName, userEmail);
-                                userDAO.insertUser(user);
+                            switch (creationChoice) {
+                                case 1: {
+                                    System.out.print("Enter user name for " + category + " category: ");
+                                    String userName = scanner.nextLine();
+                                    System.out.print("Enter user email for " + category + " category: ");
+                                    String userEmail = scanner.nextLine();
+                                    int userId = category.equals("standard") ? 101 : category.equals("premium") ? 102 : 103;
+                                    User user = factory.createUser(userId, userName, userEmail);
+                                    userDAO.insertUser(user);
 
-                                System.out.println("\nUser Created:\n  ID: " + user.getIdUser() + "\n  Name: " + user.getName() + "\n  Email: " + user.getEmail());
-                                break;
-                            }
-                            case 2: {
-                                System.out.print("Enter room name for " + category + " category: ");
-                                String roomName = scanner.nextLine();
-                                System.out.print("Enter room floor for " + category + " category: ");
-                                int roomFloor = readInteger(scanner);
-                                System.out.print("Enter room location for " + category + " category: ");
-                                String roomLocation = scanner.nextLine();
-                                System.out.print("Enter room capacity for " + category + " category: ");
-                                int roomCapacity = readInteger(scanner);
-                                System.out.print("Does the room have a projector? (true/false): ");
-                                boolean roomProjector = Boolean.parseBoolean(scanner.nextLine());
-                                System.out.print("Does the room have a smart board? (true/false): ");
-                                boolean roomSmartBoard = Boolean.parseBoolean(scanner.nextLine());
-                                System.out.print("Enter room price per day for " + category + " category: ");
-                                double roomPrice = Double.parseDouble(scanner.nextLine());
-                                int roomId = category.equals("standard") ? 201 : category.equals("premium") ? 202 : 203;
-                                Room room = factory.createRoom(roomId, roomName, roomFloor, roomLocation, roomCapacity, category.substring(0, 1).toUpperCase() + category.substring(1), true, roomProjector, roomSmartBoard, roomPrice);
-                                roomDAO.insertRoom(room);
+                                    System.out.println("\nUser Created:\n  ID: " + user.getIdUser() + "\n  Name: " + user.getName() + "\n  Email: " + user.getEmail());
+                                    break;
+                                }
+                                case 2: {
+                                    System.out.print("Enter room name for " + category + " category: ");
+                                    String roomName = scanner.nextLine();
+                                    System.out.print("Enter room floor for " + category + " category: ");
+                                    int roomFloor = readInteger(scanner);
+                                    System.out.print("Enter room location for " + category + " category: ");
+                                    String roomLocation = scanner.nextLine();
+                                    System.out.print("Enter room capacity for " + category + " category: ");
+                                    int roomCapacity = readInteger(scanner);
+                                    System.out.print("Does the room have a projector? (true/false): ");
+                                    boolean roomProjector = Boolean.parseBoolean(scanner.nextLine());
+                                    System.out.print("Does the room have a smart board? (true/false): ");
+                                    boolean roomSmartBoard = Boolean.parseBoolean(scanner.nextLine());
+                                    System.out.print("Enter room price per day for " + category + " category: ");
+                                    double roomPrice = Double.parseDouble(scanner.nextLine());
+                                    int roomId = category.equals("standard") ? 201 : category.equals("premium") ? 202 : 203;
+                                    Room room = factory.createRoom(roomId, roomName, roomFloor, roomLocation, roomCapacity, category.substring(0, 1).toUpperCase() + category.substring(1), true, roomProjector, roomSmartBoard, roomPrice);
+                                    roomDAO.insertRoom(room);
 
-                                System.out.println("\nRoom Created:\n  ID: " + room.getIdRoom() + "\n  Name: " + room.getName() + "\n  Type: " + room.getType() + "\n  Location: " + room.getLocation() + "\n  Capacity: " + room.getCapacity() + "\n  Price per Day: " + room.getPricePerDay());
-                                break;
-                            }
-                            case 3: {
-                                continueCreating = false;
-                                break;
-                            }
-                            default: {
-                                System.out.println("Invalid choice. Please select 1, 2, or 3.");
+                                    System.out.println("\nRoom Created:\n  ID: " + room.getIdRoom() + "\n  Name: " + room.getName() + "\n  Type: " + room.getType() + "\n  Location: " + room.getLocation() + "\n  Capacity: " + room.getCapacity() + "\n  Price per Day: " + room.getPricePerDay());
+                                    break;
+                                }
+                                case 3: {
+                                    continueCreating = false;
+                                    break;
+                                }
+                                default: {
+                                    System.out.println("Invalid choice. Please select 1, 2, or 3.");
+                                }
                             }
                         }
+                    } catch (Exception e) {
+                        System.out.println("Error while creating category-specific entities: " + e.getMessage());
                     }
-                } catch (Exception e) {
-                    System.out.println("Error while creating category-specific entities: " + e.getMessage());
                 }
                 break;
             }
